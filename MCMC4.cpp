@@ -39,7 +39,6 @@ double poisson(vector< vector< double> >pourcentage,vector< double> param, int N
 	double mv[16]= {-4.5,-4.75,-5,-5.25,-5.5,-5.75,-6,-6.25,-6.5,-6.75,-7,-7.25,-7.5,-7.75,-8,-8.25};// grid of magnitude in the V band
 	double rh[12]={1.8,1.9,2,2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9};// grid of log(rh)
 	vector <vector <double> > model(12, vector<double>(16));
-	double rho=1.8-param[0]*param[1];
 	//For each mv bin and rh bin the model is calculated:
 	for (int m=0;m<12;m++){
 		for (int n=0;n<16;n++){
@@ -47,7 +46,7 @@ double poisson(vector< vector< double> >pourcentage,vector< double> param, int N
 			// In order to be more precise the recovery of dwarf galaxies, for each mv-log(rh) bin is calculated thanks to an integral over the bin:
 			for (int o=0;o<10;o++){
 				for (int p=0;p<10;p++){
-					double mv_limm=((rh[m]+p*0.01-rho)/param[1]);
+					double mv_limm=param[0]*(rh[m]+p*0.01)+param[1];
 					double beta=erfc((mv[n]-o*0.025-mv_limm)/(sqrt(2)*param[2]));
 					eff=eff+0.5*Ngalax*beta;
 				}
@@ -91,7 +90,7 @@ file_sortie=fopen(sortie,"w");
 srand(time(NULL)); 
 double Ngal=5; // Number of dwarf galaxies added to the survey to calculate the recovery fractions
 vector< double> erreur={0.1,0.05,0.05}; // Vector that contains the error
-vector< vector <double>> parametres={{-5.4,-0.5,0.4}}; // Vector that contains a guess of the parameters value
+vector< vector <double>> parametres={{-0.9,-5.0,0.4}}; // Vector that contains a guess of the parameters value
 vector<double> L;
 L.push_back(poisson(data,parametres[0],Ngal,facto));
 int number_points_accepted=0; //Number of accepted points
